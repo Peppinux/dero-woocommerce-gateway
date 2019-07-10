@@ -56,3 +56,14 @@ __XMR__: 46LugwCgmfMd9puoXiRzfobaFPHr1do78d6rbxkT32bo2cHX8vu2YRpVnQbyE7LQXzeZLVY
 __BTC__: 18RUHsdW3pC9NSJ9g2HeYvNRhbAqyGoeM6
 
 __ETH__: 0x80C5540a865740495AF4569954459E1Bf4EF0dB4
+
+## Screenshots
+
+Settings
+![Settings](https://i.imgur.com/eDANcx8.png)
+
+Place order
+![Place order](https://i.imgur.com/TMNb3DB.png)
+
+Order details
+![Order details](https://i.imgur.com/745SXOe.png)
