@@ -3,12 +3,12 @@
 Start accepting secure and private payments with [DERO](https://dero.io/) on your WooCommerce shop.
 
 ## Requirements
-* A web server with PHP installed. (Plugin tested on PHP 7)
-* cURL and JSON PHP extensions enabled.
-* Wordpress installed. (Plugin tested on Wordpress 5.2.2)
+* A web server with PHP and [Wordpress](https://wordpress.org/download/) installed are needed for WooCommerce. (Plugin tested on PHP version 7 and Wordpress 5.2.2)
 * WooCommerce plugin for Wordpress installed. (Plugin tested on WooCommerce 3.1.6)
 * A running istance of the [dero-wallet-cli](https://github.com/deroproject/derosuite/releases) for receiving payments.
-* Wallet needs to expose its RPC server by running it with the `--rpc-server` flag and possibly `--rpc-login=username:password` flag for security reasons.
+  * Wallet needs to expose its RPC server by running it with the `--rpc-server` flag.
+  * `--rpc-login=username:password` flag should be added for security reasons.
+  * Using the previous flag is __strongly suggested__ (not by the plugin, but by common sense) if the wallet is running on a different machine (consequently with a open port) from the web server.
 
 ## How to install
 * Download the plugin from the [releases page](https://github.com/Peppinux/dero-woocommerce-gateway/releases).
@@ -59,11 +59,11 @@ __ETH__: 0x80C5540a865740495AF4569954459E1Bf4EF0dB4
 
 ## Screenshots
 
-Settings
+### Settings
 ![Settings](https://i.imgur.com/eDANcx8.png)
 
-Place order
+### Place order
 ![Place order](https://i.imgur.com/TMNb3DB.png)
 
-Order details
+### Order details
 ![Order details](https://i.imgur.com/745SXOe.png)
