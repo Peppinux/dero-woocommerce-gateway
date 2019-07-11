@@ -8,7 +8,7 @@ Start accepting secure and private payments with [DERO](https://dero.io/) on you
 * A running istance of the [dero-wallet-cli](https://github.com/deroproject/derosuite/releases) for receiving payments.
   * Wallet needs to expose its RPC server by running it with the `--rpc-server` flag.
   * `--rpc-login=username:password` flag should be added for security reasons.
-  * Using the previous flag is __strongly suggested__ (not by the plugin, but by common sense) if the wallet is running on a different machine (consequently with a open port) from the web server.
+  * Using the previous flag is __strongly advised__ (not by the plugin, but by common sense) especially if the wallet is running on a different machine (consequently with a open port) from the web server.
 
 ## How to install
 * Download the plugin from the [releases page](https://github.com/Peppinux/dero-woocommerce-gateway/releases).
