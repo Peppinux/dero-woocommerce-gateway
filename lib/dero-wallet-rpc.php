@@ -87,7 +87,7 @@ class DERO_Wallet_RPC {
     }
 
     public static function get_bulk_payments($payment_id, $min_block_height = 0) {
-        $result = self::request('get_bulk_payments', array('payments_ids' => array($payment_id), 'min_block_height' => (int)$min_block_height))['result'];
+        $result = self::request('get_bulk_payments', array('payment_ids' => array($payment_id), 'min_block_height' => (int)$min_block_height))['result'];
         if(empty($result))
             return null;
         return $result['payments'];
