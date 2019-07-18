@@ -186,19 +186,24 @@ function dero_gateway_init() {
 
             $prepared_statement_params = array(
                 $order_id,
-                $payment_id,
-                $integrated_address,
                 $currency,
                 $exchange_rate,
                 $fiat_total,
                 $discount,
-                $dero_total,
-                $current_height
+                $dero_total
             );
-            $query = $wpdb->prepare("INSERT INTO $table_name (order_id, payment_id, integrated_address, currency, exchange_rate, fiat_total, discount_percentage, dero_total, height_at_creation) VALUES (%d, %s, %s, %s, %f, %f, %d, %f, %d)", $prepared_statement_params);
+            $query = $wpdb->prepare("INSERT INTO $table_name (order_id, currency, exchange_rate, fiat_total, discount_percentage, dero_total) VALUES (%d, %s, %f, %f, %d, %f)", $prepared_statement_params);
             $wpdb->query($query);
 
-            $wpdb->query("UPDATE $table_name SET status='on-hold', creation_time=NOW() WHERE order_id=$order_id"); // Separate query to re-set status when re-paying existing order.
+            $prepared_statement_params = array(
+                $payment_id,
+                $integrated_address,
+                $current_height,
+                $order_id
+            );
+            $query = $wpdb->prepare("UPDATE $table_name SET payment_id=%s, integrated_address=%s, status='on-hold', creation_time=NOW(), height_at_creation=%d WHERE order_id=%d", $prepared_statement_params); // This separated query is needed for order re-paying. The previous INSERT INTO wouldn't update the values of an already existing order.
+            $wpdb->query($query);
+
             $order->update_status('on-hold', __('Awaiting DERO payment', 'dero_gateway'));
             $order->reduce_order_stock();
             $woocommerce->cart->empty_cart();
@@ -320,7 +325,7 @@ function check_dero_payments() {
             $wpdb->query($query);
         } else {
             $payments = DERO_Wallet_RPC::get_bulk_payments($result->payment_id, $result->height_at_creation);
-            if(payments != null) {
+            if($payments != null) {
                 $dero_total = $result->dero_total * pow(10, 12); // Convert DERO got from the db from float to int in order to make it comparable to the value returned by wallet RPC.
                 $payment = null;
                 foreach($payments as $p) {
@@ -329,8 +334,12 @@ function check_dero_payments() {
                         break;
                     }
                 }
-                if(payment != null) {
+
+                $txid = null;
+
+                if($payment != null) {
                     $payment_confirmations = DERO_Wallet_RPC::get_height() - $result->height_at_creation;
+                    $txid = $payment['tx_hash'];
 
                     if($payment_confirmations >= $required_confirmations)
                         $order->payment_complete();
@@ -338,9 +347,7 @@ function check_dero_payments() {
                     if($order->get_status() == "on-hold" || $order->get_status() == "pending")
                         $order->update_status('failed', __('Amount of DERO sent not matching with order total.', 'dero_gateway'));
                 }
-
-                $tx_hash = ($payment != null) ? $payment['tx_hash'] : null;
-                $query = $wpdb->prepare("UPDATE $table_name SET status=%s, received_payment_txid=%s WHERE order_id=%d", array($order->get_status(), $tx_hash, $result->order_id));
+                $query = $wpdb->prepare("UPDATE $table_name SET status=%s, received_payment_txid=%s WHERE order_id=%d", array($order->get_status(), $txid, $result->order_id));
                 $wpdb->query($query);
             }
         }
