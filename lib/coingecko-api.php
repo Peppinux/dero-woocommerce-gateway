@@ -1,7 +1,7 @@
 <?php
 defined('ABSPATH') || exit;
 
-require_once(DERO_GATEWAY_PLUGIN_DIR . '/lib/utils/admin-error.php');
+require_once(DERO_GATEWAY_PLUGIN_DIR . '/lib/util/admin-error.php');
 
 class CoinGecko_API {
     private static $url = 'https://api.coingecko.com/api/v3/';

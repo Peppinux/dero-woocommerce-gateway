@@ -1,9 +1,10 @@
 <?php
 defined('ABSPATH') || exit;
 
-require_once(DERO_GATEWAY_PLUGIN_DIR . '/lib/utils/admin-error.php');
+require_once(DERO_GATEWAY_PLUGIN_DIR . '/lib/util/admin-error.php');
 
 class DERO_Wallet_RPC {
+    // Default values that will be edited once the setup function is called inside the DERO_Gateway constructor
     private static $host = '127.0.0.1';
     private static $port = 20209;
     private static $login_required = false;
@@ -85,8 +86,11 @@ class DERO_Wallet_RPC {
         return self::request('make_integrated_address', array('payment_id' => $payment_id))['result']['integrated_address'];
     }
 
-    public static function get_incoming_transfers($min_height) {
-        return self::request('get_transfers', array('in' => true, 'filter_by_height' => true, 'min_height' => (int)$min_height, 'max_height' => 0))['result']['in'];
+    public static function get_bulk_payments($payment_id, $min_block_height = 0) {
+        $result = self::request('get_bulk_payments', array('payments_ids' => array($payment_id), 'min_block_height' => (int)$min_block_height))['result'];
+        if(empty($result))
+            return null;
+        return $result['payments'];
     }
 }
 ?>
