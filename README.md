@@ -29,6 +29,10 @@ Start accepting secure and private payments with [DERO](https://dero.io/) on you
 * `Wallet username` - Wallet RPC username used to connect to the wallet. (Default: none)
 * `Wallet password` - Wallet RPC password used to connect to the wallet. (Default: none)
 
+## DERO Accepted Here Badge
+Use shortcode `[dero-accepted-here]` to display the badge on your pages.
+![DERO Accepted Here Badge](https://i.imgur.com/2eAdksP.png)
+
 ## How it works
 * After order checkout: 
   * A random Payment ID and associated Integrated Address are generated through Wallet RPC.
@@ -37,9 +41,8 @@ Start accepting secure and private payments with [DERO](https://dero.io/) on you
   * Integrated Address, total amount of DERO to pay, amount of time left to pay and other useful details are shown to the customer in the order summary page.
 * Once every minute on the server (through Wordpress CRON Job):
     * List of pending orders paid with DERO gets fetched from the database through wpdb.
-    * List of incoming transfers to the wallet gets fetched through Wallet RPC.
-    * If the Payment ID of one of the pending orders matches with the Payment ID of one of the incoming transfers and the amount transfered isn't less than the order total, payment is received and order status gets updated.
-    * If payment isn't received in time (Order valid time setting) order status is set to failed.
+    * List of incoming payments with the same Payment ID gets fetched through Wallet RPC.
+    * If payment isn't received in time, order status is set to failed.
     * If the amount transfered isn't enough to cover the total of the order, order status is set to failed and the owner of the shop has to refund the customer.
 
 ## Credits
@@ -47,6 +50,9 @@ Start accepting secure and private payments with [DERO](https://dero.io/) on you
 - [CoinGecko API](https://www.coingecko.com/api) for price conversion.
 - [WooCommerce Payment Gateway API](https://docs.woocommerce.com/document/payment-gateway-api/).
 - [Monero Gateway for WooCommerce](https://github.com/monero-integrations/monerowp) by [Monero Integrations](https://github.com/monero-integrations) for the inspiration.
+- [clipboard.js](https://clipboardjs.com/)
+- [QRCode.js](https://davidshimjs.github.io/qrcodejs/)
+- [Bitcoin Accepted Here Logo PSD by Thomas Schmall](https://www.oxpal.com/bitcoin-accepted-here-logos.html) for providing the footprint for the "DERO Accepted Here" badge.
 
 ## Donations
 __DERO__: dERiY64hDfghSaUCRJN6HuFpfuaQKnPftTfXoBbi7CaLVTFCGdYrPN5iZTWNcqiZkbEVqaGduHt6C2CagHV2SPQdeUeDKueYirQhGykNLZwrug5FHzP2sSFcngdwaxGrX2Ne5GjGc8xrBt
@@ -59,11 +65,11 @@ __ETH__: 0x80C5540a865740495AF4569954459E1Bf4EF0dB4
 
 ## Screenshots
 
-### Settings
+### Admin - Dashboard Settings
 ![Settings](https://i.imgur.com/eDANcx8.png)
 
-### Place order
+### Customer - Place order
 ![Place order](https://i.imgur.com/TMNb3DB.png)
 
-### Order details
-![Order details](https://i.imgur.com/745SXOe.png)
+### Customer - Order details
+![Order details](https://i.imgur.com/Zb4RIkt.png)
