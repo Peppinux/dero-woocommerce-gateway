@@ -2,6 +2,8 @@
 
 Start accepting secure and private payments with [DERO](https://dero.io/) on your WooCommerce shop.
 
+>**DISCLAIMER:** This is a community project. DERO official team was not involved in the development and, as such, can not be held accountable for any issue/bug.
+
 ## Requirements
 * A web server with PHP and [Wordpress](https://wordpress.org/download/) installed are needed for WooCommerce. (Plugin tested on PHP version 7 and Wordpress 5.2.2)
 * WooCommerce plugin for Wordpress installed. (Plugin tested on WooCommerce 3.1.6)
