@@ -151,12 +151,6 @@ function dero_gateway_init() {
             global $wpdb;
             $table_name = $wpdb->prefix . 'dero_gateway_payments';
 
-            if($wpdb->get_var("show tables like $table_name") != $table_name) {
-                $error_message = 'Can\'t find DERO payments table. Plugin needs to be deactivated and reactivated.';
-                wc_add_notice(__('DERO Payment Gateway error: ', 'dero_gateway') . $error_message, 'error');
-                return;
-            }
-
             $payment_id = '';
             do {
                 $payment_id = bin2hex(openssl_random_pseudo_bytes(32));
@@ -321,7 +315,7 @@ function dero_gateway_init() {
                                     jQuery('#address-qrcode').toggle();
                                 }
                             </script>";
-            echo wpautop(wptexturize($instructions));
+            echo $instructions;
         }
 
         public function email_instructions($order, $sent_to_admin, $plain_text = false) {
