@@ -28,7 +28,7 @@ function dero_gateway_init() {
     class DERO_Gateway extends WC_Payment_Gateway {
         function __construct() {
             $this->id = 'dero_gateway';
-            $this->icon = apply_filters('woocommerce_gateway_icon', DERO_GATEWAY_PLUGIN_URL . '/assets/icon.png');
+            $this->icon = apply_filters('woocommerce_gateway_icon', DERO_GATEWAY_PLUGIN_URL . '/assets/img/dero-icon.png');
             $this->has_fields = false;
             $this->method_title = __('DERO Gateway', 'dero_gateway');
             $this->method_description = __('DERO Payment Gateway for WooCommerce', 'dero_gateway');
@@ -151,6 +151,12 @@ function dero_gateway_init() {
             global $wpdb;
             $table_name = $wpdb->prefix . 'dero_gateway_payments';
 
+            if($wpdb->get_var("show tables like $table_name") != $table_name) {
+                $error_message = 'Can\'t find DERO payments table. Plugin needs to be deactivated and reactivated.';
+                wc_add_notice(__('DERO Payment Gateway error: ', 'dero_gateway') . $error_message, 'error');
+                return;
+            }
+
             $payment_id = '';
             do {
                 $payment_id = bin2hex(openssl_random_pseudo_bytes(32));
@@ -225,7 +231,7 @@ function dero_gateway_init() {
                 $remaining_seconds = $this->order_valid_time - $result->seconds_passed;
                 $time_format = format_time($remaining_seconds);
                 if($remaining_seconds > 0)
-                    $status = "Awaiting payment. Your order will expire in <i>$time_format</i> if payment is not received.";
+                    $status = "Awaiting payment. Your order will expire in <i>$time_format</i> if payment is not received. Refresh this page to get updated status.";
                 else
                     $status = "Your order is about to expire. Place another one to complete your purchase.";
             } else if($result->status == 'expired')
@@ -240,7 +246,10 @@ function dero_gateway_init() {
             $integrated_address_section = "";
             if($result->status == 'on-hold' || $result->status == 'pending')
                 $integrated_address_section = "<li class='woocommerce-order-overview__order order'>
-                                                    Pay to (integrated address): <strong>$result->integrated_address</strong>
+                                                    <span class='detail-title'>Pay to (integrated address):</span> <span class='detail-content'><strong><span id='dero-integrated-address'>$result->integrated_address</span></strong></span>
+                                                    <button class='clipboard-button' title='Copy to clipboard' data-clipboard-target='#dero-integrated-address'><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 512 512' version='1'><path d='M504 118c-6-6-12-8-20-8H365c-11 0-23 3-36 11V27c0-7-3-14-8-19s-12-8-20-8H183c-8 0-16 2-25 6-10 4-17 8-22 13L19 136c-5 5-9 12-13 22-4 9-6 17-6 25v192c0 7 3 14 8 19s12 8 19 8h156v82c0 8 2 14 8 20 5 5 12 8 19 8h274c8 0 14-3 20-8 5-6 8-12 8-20V137c0-8-3-14-8-19zm-175 52v86h-85l85-86zM146 61v85H61l85-85zm56 185c-5 5-10 12-14 21-3 9-5 18-5 25v73H37V183h118c8 0 14-3 20-8 5-6 8-12 8-20V37h109v118l-90 91zm273 229H219V292h119c8 0 14-2 19-8 6-5 8-11 8-19V146h110v329z'/></svg></button>
+                                                    <button class='qrcode-button' title='Show QR Code' onclick='toggleQRCode()'><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 512 512' version='1'><path d='M0 512h233V279H0zm47-186h139v139H47z'/><path d='M93 372h47v47H93zm279 93h47v47h-47zm93 0h47v47h-47z'/><path d='M465 326h-46v-47H279v233h47V372h46v47h140V279h-47zM0 233h233V0H0zM47 47h139v139H47z'/><path d='M93 93h47v47H93zM279 0v233h233V0zm186 186H326V47h139z'/><path d='M372 93h47v47h-47z'/></svg></button>
+                                                    <div id='address-qrcode'></div>
                                                 </li>";
 
             $txid_section = "";
@@ -249,7 +258,29 @@ function dero_gateway_init() {
                                     Payment TXID: <strong>$result->received_payment_txid</strong>
                                 </li>";
 
-            $instructions = "<section class='woocommerce-order-details'>
+            $instructions = "<style>
+                                .detail-title {
+                                    display: block;
+                                }
+                                
+                                .detail-content {
+                                    display: inline-block;
+                                    word-break: break-word;
+                                }
+                                
+                                .clipboard-button, .qrcode-button {
+                                    display: inline-block;
+                                    margin-left: 10px;
+                                    font-size: 0.5em;
+                                    border-radius: 10%;
+                                }
+
+                                #address-qrcode {
+                                    display: none;
+                                    margin-top: 20px;
+                                }
+                            </style>
+                            <section class='woocommerce-order-details'>
                                 <h2 class='woocommerce-order-details__title'>DERO Payment Details</h2>
                                 <ul class='woocommerce-order-overview woocommerce-thankyou-order-details order_details'>
                                     <li class='woocommerce-order-overview__order order'>
@@ -263,13 +294,34 @@ function dero_gateway_init() {
                                     </li>
                                     $discount_section
                                     <li class='woocommerce-order-overview__order order'>
-                                        Total: <strong>$result->dero_total DERO</strong>
+                                        <span class='detail-title'>Total:</span> <span class='detail-content'><strong><span id='dero-total'>$result->dero_total</span> DERO</strong></span>
+                                        <button class='clipboard-button' title='Copy to clipboard' data-clipboard-target='#dero-total'><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 512 512' version='1'><path d='M504 118c-6-6-12-8-20-8H365c-11 0-23 3-36 11V27c0-7-3-14-8-19s-12-8-20-8H183c-8 0-16 2-25 6-10 4-17 8-22 13L19 136c-5 5-9 12-13 22-4 9-6 17-6 25v192c0 7 3 14 8 19s12 8 19 8h156v82c0 8 2 14 8 20 5 5 12 8 19 8h274c8 0 14-3 20-8 5-6 8-12 8-20V137c0-8-3-14-8-19zm-175 52v86h-85l85-86zM146 61v85H61l85-85zm56 185c-5 5-10 12-14 21-3 9-5 18-5 25v73H37V183h118c8 0 14-3 20-8 5-6 8-12 8-20V37h109v118l-90 91zm273 229H219V292h119c8 0 14-2 19-8 6-5 8-11 8-19V146h110v329z'/></svg></button>
                                     </li>
                                     $integrated_address_section
                                     $txid_section
                                 </ul>
-                            </section>";
-            echo wp_kses_post(wpautop(wptexturize($instructions)));
+                            </section>
+                            <script type='text/javascript'>
+                                jQuery(document).ready(function() {
+                                    // Clipboard
+                                    var clipboardButtons = document.querySelectorAll('button.clipboard-button');
+                                    var clipboard = new ClipboardJS(clipboardButtons);
+
+                                    clipboard.on('success', function(e) {
+                                        console.log('Text copied to clipboard.');
+                                    });
+                                    clipboard.on('error', function(e) {
+                                        console.log('Error occured while trying to copy text to clipboard.');
+                                    });
+
+                                    // QR Code
+                                    new QRCode(document.getElementById('address-qrcode'), '$result->integrated_address');
+                                });
+                                function toggleQRCode() {
+                                    jQuery('#address-qrcode').toggle();
+                                }
+                            </script>";
+            echo wpautop(wptexturize($instructions));
         }
 
         public function email_instructions($order, $sent_to_admin, $plain_text = false) {
@@ -389,4 +441,15 @@ function dero_deactivate() {
     wp_clear_scheduled_hook('check_dero_payments_cron');
 }
 register_deactivation_hook(__FILE__, 'dero_deactivate');
+
+function dero_enqueue_scripts() {
+    wp_enqueue_script('dero-qrcode-js', DERO_GATEWAY_PLUGIN_URL . 'assets/js/qrcode.min.js');
+    wp_enqueue_script('dero-clipboard-js', DERO_GATEWAY_PLUGIN_URL . 'assets/js/clipboard.min.js');
+}
+add_action('wp_enqueue_scripts', 'dero_enqueue_scripts');
+
+function dero_accepted_here_shortcode() {
+    return '<img src="' . DERO_GATEWAY_PLUGIN_URL . 'assets/img/dero-accepted-here.png" />';
+}
+add_shortcode('dero-accepted-here', 'dero_accepted_here_shortcode');
 ?>
