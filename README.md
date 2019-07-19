@@ -31,6 +31,7 @@ Start accepting secure and private payments with [DERO](https://dero.io/) on you
 
 ## DERO Accepted Here Badge
 Use shortcode `[dero-accepted-here]` to display the badge on your pages.
+
 ![DERO Accepted Here Badge](https://i.imgur.com/2eAdksP.png)
 
 ## How it works
