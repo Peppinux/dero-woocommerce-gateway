@@ -12,7 +12,10 @@ Start accepting secure and private payments with [DERO](https://dero.io/) on you
   * `--rpc-login=username:password` flag should be added for security reasons.
   * Using the previous flag is __strongly advised__ (not by the plugin, but by common sense) especially if the wallet is running on a different machine (consequently with a open port) from the web server.
 
-## How to install
+## Complete Installation Guide
+* Read (https://github.com/Peppinux/dero-woocommerce-gateway/blob/master/installation_guide.pdf)[installation_guide.pdf] for in-depth instructions.
+
+## Quick Installation Guide
 * Download the plugin from the [releases page](https://github.com/Peppinux/dero-woocommerce-gateway/releases).
 * Unzip it into the `wp-content/plugins` folder of your Wordpress folder.
 * Activate the plugin in the `Plugins -> Installed Plugins` page of your Wordpress Dashboard.
