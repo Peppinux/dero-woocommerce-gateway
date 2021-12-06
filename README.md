@@ -2,7 +2,8 @@
 
 Start accepting secure and private payments with [DERO](https://dero.io/) on your WooCommerce shop.
 
->**DISCLAIMER:** This is a community project. DERO official team was not involved in the development and, as such, should not be held accountable for any issue/bug.
+| :zap: This project was developed back in 2019 for DERO Atlantis. As such, it's not going to be compatible with the latest DERO-HE STARGATE release. |
+|-----------------------------------------|
 
 ## Requirements
 * A web server with PHP and [Wordpress](https://wordpress.org/download/) installed are needed for WooCommerce. (Plugin tested on PHP version 7 and Wordpress 5.2.2)
@@ -61,13 +62,7 @@ Use shortcode `[dero-accepted-here]` to display the badge on your pages.
 - [Bitcoin Accepted Here Logo PSD by Thomas Schmall](https://www.oxpal.com/bitcoin-accepted-here-logos.html) for providing the footprint for the "DERO Accepted Here" badge.
 
 ## Donations
-__DERO__: dERiY64hDfghSaUCRJN6HuFpfuaQKnPftTfXoBbi7CaLVTFCGdYrPN5iZTWNcqiZkbEVqaGduHt6C2CagHV2SPQdeUeDKueYirQhGykNLZwrug5FHzP2sSFcngdwaxGrX2Ne5GjGc8xrBt
-
-__XMR__: 46LugwCgmfMd9puoXiRzfobaFPHr1do78d6rbxkT32bo2cHX8vu2YRpVnQbyE7LQXzeZLVYmpv2jsQvFs6QirBoAJ4fXEGM
-
-__BTC__: 18RUHsdW3pC9NSJ9g2HeYvNRhbAqyGoeM6
-
-__ETH__: 0x80C5540a865740495AF4569954459E1Bf4EF0dB4
+**DERO**: dERoWuoU8wthSaUCRJN6HuFpfuaQKnPftTfXoBbi7CaLVTFCGdYrPN5iZTWNcqiZkbEVqaGduHt6C2CagHV2SPQd9VU1UknF1N
 
 ## Screenshots
 
